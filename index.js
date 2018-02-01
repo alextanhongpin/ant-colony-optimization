@@ -1,45 +1,64 @@
+const canvas = document.getElementById('canvas')
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
+// canvas.style.background = 'red'
+const context = canvas.getContext('2d')
+context.fillStyle = 'white'
+context.fillRect(0, 0, window.innerWidth, window.innerHeight)
 
-class AntColonyOptimization {
-  constructor () {
-    this.c = 1.0
-    this.alpha = 1
-    this.beta = 5
-    this.evaporation = 0.5
-    this.Q = 500
-    this.antFactor = 0.8
-    this.randomFactor = 0.01
-
-    this.maxIterations = 1000
-
-    this.numberOfCities
-    this.numberOfAnts
-    this.graph = []
-    this.trails = []
-    this.ants = []
-    this.random = Math.random()
-    this.probabilities = []
-    this.currentIndex
-    this.bestTourOrder
-    this.bestTourLength
-  }
-
-  AntColonyOptimization (noOfOffices) {
-    this.graph = this.generateRandomMatrix(noOfOffices)
-    this.numberOfCities = this.graph.length
-    this.numberOfAnts = this.numberOfCities * this.antFactor
-  }
+const RADIUS = 5
+const MULTIPLIER = 2
+function draw (values, i) {
+  context.clearRect(0, 0, window.innerWidth, window.innerHeight)
+  context.fillText(`Iteration ${i}`, 20, 20)
+  values.forEach(([x, y], i) => {
+    context.beginPath()
+    context.arc(x / MULTIPLIER, y / MULTIPLIER, RADIUS, 0, 2 * Math.PI)
+    context.fillStyle = 'black'
+    context.fill()
+    if (values[i + 1]) {
+      const [x1, y1] = values[i + 1]
+      context.lineTo(x1 / MULTIPLIER, y1 / MULTIPLIER)
+      context.strokeStyle = '#888888'
+      context.stroke()
+    }
+    context.closePath()
+  })
 }
 
 function main () {
-  let c = 1.0
-  let alpha = 1
-  let beta = 5
-  let evaporation = 0.5
-  let Q = 500
-  let antFactor = 0.8
-  let randomFactor = 0.01
+  const berlin52 = [[565, 575], [25, 185], [345, 750], [945, 685], [845, 655],
+  [880, 660], [25, 230], [525, 1000], [580, 1175], [650, 1130], [1605, 620],
+  [1220, 580], [1465, 200], [1530, 5], [845, 680], [725, 370], [145, 665],
+  [415, 635], [510, 875], [560, 365], [300, 465], [520, 585], [480, 415],
+  [835, 625], [975, 580], [1215, 245], [1320, 315], [1250, 400], [660, 180],
+  [410, 250], [420, 555], [575, 665], [1150, 1160], [700, 580], [685, 595],
+  [685, 610], [770, 610], [795, 645], [720, 635], [760, 650], [475, 960],
+  [95, 260], [875, 920], [700, 500], [555, 815], [830, 485], [1170, 65],
+  [830, 610], [605, 625], [595, 360], [1340, 725], [1740, 245]]
+
+  const maxIt = 100
+  const numAnts = 10
+  const decay = 0.1
+  const cHeur = 2.5
+  const cLocalPhero = 0.1
+  const cGreed = 0.9
+
+ // console.log(randomPermutation(berlin52.slice(0, 5)))
+  const output = []
+  const best = search(berlin52, maxIt, numAnts, decay, cHeur, cLocalPhero, cGreed, (points) => {
+    const values = points.map(point => berlin52[point])
+    output.push(values)
+  })
+
+  output.forEach((point, i) => {
+    ((_i) => {
+      window.setTimeout(() => {
+        draw(point, _i)
+      }, _i * 250)
+    })(i)
+  })
+  console.log(`Done. Best Solution: c=${best.cost}, v=${best.vector}`)
 }
 
-function visitCity (currentIndex, city) {
-  trail[currentIndex + 1] = city
-}
+main()
