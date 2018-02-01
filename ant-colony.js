@@ -117,7 +117,7 @@ function search (cities, maxIt, numAnts, decay, cHeur, cLocalPhero, cGreed, cb) 
     })
     globalUpdatePheromone(pheromone, best, decay)
     if (cb) {
-      cb(best.vector)
+      cb(best)
     }
     console.log(`iteration ${iter + 1}, best = ${best.cost}`)
   })

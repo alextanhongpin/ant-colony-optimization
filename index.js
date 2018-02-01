@@ -8,22 +8,27 @@ context.fillRect(0, 0, window.innerWidth, window.innerHeight)
 
 const RADIUS = 5
 const MULTIPLIER = 2
-function draw (values, i) {
+function draw ({values, cost, i}) {
   context.clearRect(0, 0, window.innerWidth, window.innerHeight)
-  context.fillText(`Iteration ${i}`, 20, 20)
-  values.forEach(([x, y], i) => {
+  context.fillText(`Iteration: ${i} Score: ${cost}`, 20, 20)
+  values.forEach(([x, y], j) => {
     context.beginPath()
     context.arc(x / MULTIPLIER, y / MULTIPLIER, RADIUS, 0, 2 * Math.PI)
     context.fillStyle = 'black'
     context.fill()
-    if (values[i + 1]) {
-      const [x1, y1] = values[i + 1]
+    if (values[j + 1]) {
+      const [x1, y1] = values[j + 1]
       context.lineTo(x1 / MULTIPLIER, y1 / MULTIPLIER)
+      if (j === values.length - 2) {
+        const [x1, y1] = values[0]
+        context.lineTo(x1 / MULTIPLIER, y1 / MULTIPLIER)
+      }
       context.strokeStyle = '#888888'
       context.stroke()
     }
-    context.closePath()
   })
+
+  context.closePath()
 }
 
 function main () {
@@ -46,15 +51,15 @@ function main () {
 
  // console.log(randomPermutation(berlin52.slice(0, 5)))
   const output = []
-  const best = search(berlin52, maxIt, numAnts, decay, cHeur, cLocalPhero, cGreed, (points) => {
-    const values = points.map(point => berlin52[point])
-    output.push(values)
+  const best = search(berlin52, maxIt, numAnts, decay, cHeur, cLocalPhero, cGreed, ({vector, cost}) => {
+    const values = vector.map(point => berlin52[point])
+    output.push({ values, cost })
   })
 
-  output.forEach((point, i) => {
+  output.forEach(({ values, cost }, i) => {
     ((_i) => {
       window.setTimeout(() => {
-        draw(point, _i)
+        draw({ values, cost, i: _i })
       }, _i * 250)
     })(i)
   })
