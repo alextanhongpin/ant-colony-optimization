@@ -1,9 +1,16 @@
 
 function euclidean (p1, p2) {
-  if (!(p1 && p2)) { console.log('euclidean', p1, p2) }
-  const sq1 = Math.pow(p1[0] - p2[0], 2)
-  const sq2 = Math.pow(p1[1] - p2[1], 2)
-  return Math.round(Math.sqrt(sq1 + sq2))
+  // if (!(p1 && p2)) { console.log('euclidean', p1, p2) }
+  // const sq1 = Math.pow(p1[0] - p2[0], 2)
+  // const sq2 = Math.pow(p1[1] - p2[1], 2)
+  const sumOfSquare = [
+    p1[0] - p2[0],
+    p1[1] - p2[1]
+  ]
+  .map(i => Math.pow(i, 2))
+  .reduce((l, r) => l + r)
+
+  return Math.round(Math.sqrt(sumOfSquare))
 }
 
 function cost (permutation, cities) {
