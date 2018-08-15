@@ -43,7 +43,7 @@ def update_position(part, bounds):
 			part['position'][i] = bounds[i][1] - abs(part['position'][i] - bounds[i][1])
 			part['velocity'][i] *= -1.0
 		elif part['position'][i] < bounds[i][0]:
-			part['position'][i] = bounds[i][0] = abs(part['position'][i] - bounds[i][0])
+			part['position'][i] = bounds[i][0] - abs(part['position'][i] - bounds[i][0])
 			part['velocity'][i] *= -1.0
 
 def update_best_position(particle):
